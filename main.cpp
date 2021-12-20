@@ -15,14 +15,15 @@ int main() {
 
 	printf("Connection estabilished!");
 
-	WCHAR message[4] = { 0 };
+	WCHAR message[2] = { 0 };
 	ULONG messageLength = 0;
 
-
 	while (!GetAsyncKeyState(VK_ESCAPE)) {
-		if (DeviceIoControl(deviceHandle, DEVICE_READ, NULL, 0, message, 4, &messageLength, 0)) {
+		if (DeviceIoControl(deviceHandle, DEVICE_READ, NULL, 0, message, 2, &messageLength, 0)) {
 			printf("%ls\n", message);
 		}
+
+		Sleep(250);
 	}
 
 	CloseHandle(deviceHandle);
