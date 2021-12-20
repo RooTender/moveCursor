@@ -18,12 +18,47 @@ int main() {
 	WCHAR message[2] = { 0 };
 	ULONG messageLength = 0;
 
-	while (!GetAsyncKeyState(VK_ESCAPE)) {
-		if (DeviceIoControl(deviceHandle, DEVICE_READ, NULL, 0, message, 2, &messageLength, 0)) {
-			printf("%ls\n", message);
+	while (!GetAsyncKeyState(VK_ESCAPE))
+	{
+		if (DeviceIoControl(deviceHandle, DEVICE_READ, NULL, 0, message, 2, &messageLength, 0))
+		{
+			POINT cursorPoint;
+			GetCursorPos(&cursorPoint);
+
+			const LONG pixels = 10;
+			long int code = wcstol(message, NULL, 10);
+			printf("%ld\n", code);
+
+			switch (code) {
+			case 1:		// UP
+				printf("up\n");
+				cursorPoint.y += pixels;
+				break;
+
+			case 2:		// DOWN
+				cursorPoint.y -= pixels;
+				break;
+
+			case 3:		// LEFT
+				cursorPoint.x -= pixels;
+				break;
+
+			case 4:		// RIGHT
+				cursorPoint.x += pixels;
+				break;
+
+			default:
+				break;
+			}
+
+			// Update cursor
+			ShowCursor(FALSE);
+			SetCursorPos(cursorPoint.x, cursorPoint.y);
+
+			ShowCursor(TRUE);
 		}
 
-		Sleep(250);
+		Sleep(100);
 	}
 
 	CloseHandle(deviceHandle);
